@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class Car {
     private final float MAX_SPEED;
+    private final float REVERSE_MAX_SPEED;
     private final float ACCELERATION;
     private final float BREAK_DECELERATION;
     private float speed = 0;
@@ -18,8 +19,9 @@ public class Car {
     private Minecart minecart;
     private Player driver = null; // If this is null it means no driver present.
 
-    public Car(float maxSpeed, float acceleration, float breakDeceleration, Player driver) {
+    public Car(float maxSpeed, float reverseMaxSpeed, float acceleration, float breakDeceleration, Player driver) {
         this.MAX_SPEED = maxSpeed;
+        this.REVERSE_MAX_SPEED = -reverseMaxSpeed; // Converted to negative since it's going backwards.
         this.ACCELERATION = acceleration;
         this.BREAK_DECELERATION = breakDeceleration;
         this.carSteering = new CarSteering(this);
@@ -72,10 +74,10 @@ public class Car {
                     return;
                 }
                 speed -= BREAK_DECELERATION;
-                if (speed <= -MAX_SPEED) {
+                if (speed <= REVERSE_MAX_SPEED) {
                     // Now it is going backwards because negative speed. ('s' is being pressed).
                     isDecelerating = false;
-                    speed = -MAX_SPEED; // Incase it goes over max speed.
+                    speed = REVERSE_MAX_SPEED; // Incase it goes over (below since it's negative) max reverse speed.
                 }
             }
         }, 1, 1);
