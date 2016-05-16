@@ -43,6 +43,11 @@ public class Car {
         minecart.setPassenger(driver);
     }
 
+    public void stopChangingSpeed() { // TODO call this if player stops moving forward.
+        isAccelerating = false;
+        isDecelerating = false;
+    }
+
     public void startAccelerating() { // TODO call this is player moves.
         isAccelerating = true;
         Bukkit.getScheduler().scheduleSyncRepeatingTask(Cars.getInstance(), new BukkitRunnable() {
@@ -59,10 +64,6 @@ public class Car {
                 }
             }
         }, 1, 1);
-    }
-
-    public void stopAccelerating() { // TODO call this if player stops moving forward.
-        isAccelerating = false;
     }
 
     public void pushBreak() {
