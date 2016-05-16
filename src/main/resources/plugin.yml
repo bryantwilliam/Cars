@@ -1,0 +1,6 @@
+name: Cars
+version: 1.0.0-DEVELOPMENT-SNAPSHOT
+main: com.gmail.gogobebe2.cars.Cars
+description: Turns a Minecart into a car.
+author: William Bryant (gogobebe2)
+website: gogobebe2@gmail.com
