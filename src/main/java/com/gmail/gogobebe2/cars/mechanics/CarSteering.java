@@ -1,27 +1,38 @@
 package com.gmail.gogobebe2.cars.mechanics;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Minecart;
 
-public class CarSteering {
+class CarSteering {
     private Car car;
+    private final float TURN_DISPLACEMENT;
+    private final float TILT_DISPLACEMENT;
 
-    protected CarSteering(Car car) {
+    CarSteering(Car car, float turnDisplacement, float tiltDisplacement) {
         this.car = car;
+        TURN_DISPLACEMENT = turnDisplacement;
+        TILT_DISPLACEMENT = tiltDisplacement;
     }
 
-    protected void tilt(TiltDirection tiltDirection, Location initialLocation, Location finalLocation) {
-        // TODO change the vertical direction of the minecart.
+    void tilt(TiltDirection tiltDirection) { // TODO Call if going up a hill.
+        Minecart minecart = car.getMinecart();
+        Location location = minecart.getLocation();
+        location.setYaw(location.getYaw() + (tiltDirection == TiltDirection.DOWN ? -TILT_DISPLACEMENT : TILT_DISPLACEMENT));
+        minecart.teleport(location);
     }
-    protected void turn(TurnDirection turnDirection, Location initialLocation, Location finalLocation) {
-        // TODO change the horizontal direction of the minecart.
+    void turn(TurnDirection turnDirection) { // TODO Call if a/d is pressed.
+        Minecart minecart = car.getMinecart();
+        Location location = minecart.getLocation();
+        location.setPitch(location.getPitch() + (turnDirection == TurnDirection.LEFT ? -TURN_DISPLACEMENT : TURN_DISPLACEMENT));
+        minecart.teleport(location);
     }
 
-    private enum TurnDirection {
+    enum TurnDirection {
         RIGHT,
         LEFT
     }
 
-    private enum TiltDirection {
+    enum TiltDirection {
         UP,
         DOWN
     }

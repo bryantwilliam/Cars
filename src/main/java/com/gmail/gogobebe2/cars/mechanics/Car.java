@@ -7,7 +7,7 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Car {
+class Car {
     private final float MAX_SPEED;
     private final float REVERSE_MAX_SPEED;
     private final float ACCELERATION;
@@ -19,12 +19,13 @@ public class Car {
     private Minecart minecart;
     private Player driver = null; // If this is null it means no driver present.
 
-    public Car(float maxSpeed, float reverseMaxSpeed, float acceleration, float breakDeceleration, Player driver) {
+    Car(float maxSpeed, float reverseMaxSpeed, float acceleration, float breakDeceleration, float turnDisplacement,
+        float tiltDisplacement, Player driver) {
         this.MAX_SPEED = maxSpeed;
         this.REVERSE_MAX_SPEED = -reverseMaxSpeed; // Converted to negative since it's going backwards.
         this.ACCELERATION = acceleration;
         this.BREAK_DECELERATION = breakDeceleration;
-        this.carSteering = new CarSteering(this);
+        this.carSteering = new CarSteering(this, turnDisplacement, tiltDisplacement);
         this.driver = driver; // TODO listener to see if player gets out and if so, set driver to null and set speed to 0.
         this.createMinecart();
 
@@ -36,19 +37,19 @@ public class Car {
         }, 1, 1);
     }
 
-    private void createMinecart() {
+    void createMinecart() {
         minecart = (Minecart) driver.getWorld().spawnEntity(driver.getLocation(), EntityType.MINECART);
         minecart.setMaxSpeed(MAX_SPEED); // Not sure if this is needed since I'm going to do it myself anyway.
         minecart.setSlowWhenEmpty(true); // Not sure if this is needed since I'm going to do it myself anyway.
         minecart.setPassenger(driver);
     }
 
-    public void stopChangingSpeed() { // TODO call this if player stops moving forward.
+    void stopChangingSpeed() { // TODO call this if player stops moving forward.
         isAccelerating = false;
         isDecelerating = false;
     }
 
-    public void startAccelerating() { // TODO call this is player moves.
+    void startAccelerating() { // TODO call this is player moves.
         isAccelerating = true;
         Bukkit.getScheduler().scheduleSyncRepeatingTask(Cars.getInstance(), new BukkitRunnable() {
             @Override
@@ -66,7 +67,7 @@ public class Car {
         }, 1, 1);
     }
 
-    public void pushBreak() {
+    void pushBreak() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(Cars.getInstance(), new BukkitRunnable() {
             @Override
             public void run() {
@@ -84,27 +85,31 @@ public class Car {
         }, 1, 1);
     }
 
-    public void letGoBreak() {
+    void letGoBreak() {
         isDecelerating = false;
     }
 
-    public float getAcceleration() {
+    float getAcceleration() {
         return ACCELERATION;
     }
 
-    public boolean isAccelerating() {
+    boolean isAccelerating() {
         return isAccelerating;
     }
 
-    public float breakDeceleration() {
+    float breakDeceleration() {
         return BREAK_DECELERATION;
     }
 
-    public float getSpeed() {
+    float getSpeed() {
         return speed;
     }
 
-    public float getMaxSpeed() {
+    float getMaxSpeed() {
         return MAX_SPEED;
+    }
+
+    Minecart getMinecart() {
+        return minecart;
     }
 }
